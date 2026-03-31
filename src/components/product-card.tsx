@@ -1,3 +1,6 @@
+"use client"
+
+import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ShoppingBag } from "lucide-react"
@@ -8,20 +11,37 @@ export type ProductType = {
   price: number
   category: string
   images: string[]
+  stock: number
 }
 
 export function ProductCard({ product }: { product: ProductType }) {
-  const imageUrl = product.images?.[0] || "/placeholder-product.jpg"
+  const [isHovered, setIsHovered] = useState(false)
+  const isOutOfStock = product.stock === 0
 
   return (
-    <div className="group relative overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md">
+    <div 
+      className="group relative overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <Link href={`/product/${product.id}`} className="block overflow-hidden relative aspect-square">
         <div className="absolute inset-0 bg-secondary/20 group-hover:bg-transparent transition-colors z-10" />
-        {/* We use a div with background image for placeholder. Switch to next/image when real URLs are available */}
-        <div 
-          className="w-full h-full bg-cover bg-center transition-transform hover:scale-105 duration-300" 
-          style={{ backgroundImage: `url(${imageUrl})`, backgroundColor: "var(--secondary)" }}
-        />
+        {product.images.map((image: string, index: number) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-500 bg-center bg-contain bg-no-repeat ${
+              index === (isHovered && product.images.length > 1 ? 1 : 0) ? "opacity-100" : "opacity-0"
+            }`}
+            style={{ backgroundImage: `url(${image})` }}
+          />
+        ))}
+        {isOutOfStock && (
+          <div className="absolute top-3 left-3 z-10">
+            <span className="bg-destructive/90 backdrop-blur text-destructive-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+              Agotado Temporalmente
+            </span>
+          </div>
+        )}
       </Link>
       
       <div className="p-4 flex flex-col gap-2">

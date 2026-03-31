@@ -16,7 +16,7 @@ export async function Header() {
         <div className="flex items-center gap-6 md:gap-8">
           <Link href="/" className="flex items-center space-x-2">
             <span className="text-xl font-bold tracking-tight text-primary">
-              Feer Store
+              FerLu Store
             </span>
           </Link>
           <nav className="hidden md:flex gap-6">
@@ -34,6 +34,7 @@ export async function Header() {
             </Link>
           </nav>
         </div>
+        <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-4">
             {isAdmin && (
               <Link href="/admin" className="text-sm font-bold text-primary hover:text-primary/80 transition-colors mr-2">
@@ -80,10 +81,6 @@ export async function Header() {
               )}
             </nav>
           </MobileMenu>
-          
-          <button className="md:hidden p-2">
-            <Menu className="h-6 w-6" />
-          </button>
         </div>
       </div>
     </header>

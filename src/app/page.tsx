@@ -1,6 +1,16 @@
 import Link from "next/link"
+import { PrismaClient } from "@prisma/client"
+import { ProductCard } from "@/components/product-card"
+import { SearchBar } from "@/components/search-bar"
 
-export default function Home() {
+const prisma = new PrismaClient()
+
+export default async function Home() {
+  const latestProducts = await prisma.product.findMany({
+    orderBy: { createdAt: 'desc' },
+    take: 8
+  })
+
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
@@ -29,12 +39,39 @@ export default function Home() {
                   Ver Joyas
                 </Link>
               </div>
+              
+              <SearchBar />
             </div>
           </div>
           
           {/* Decorative shapes for cute aesthetic */}
           <div className="absolute top-1/4 left-10 w-24 h-24 bg-primary/20 rounded-full blur-2xl" />
           <div className="absolute bottom-10 right-20 w-32 h-32 bg-accent/20 rounded-full blur-2xl flex" />
+        </section>
+
+        {/* Featured Products Section */}
+        <section className="container mx-auto px-4 py-16 md:py-24">
+          <div className="flex flex-col items-center mb-12 text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-foreground mb-4">
+              Novedades Destacadas
+            </h2>
+            <div className="w-24 h-1 bg-primary rounded-full mb-6"></div>
+            <p className="text-lg text-muted-foreground max-w-2xl">
+              Descubre los últimos ingresos de FerLu Store en joyería exclusiva y cuidado personal. Todo diseñado para resaltar lo mejor de ti.
+            </p>
+          </div>
+
+          {latestProducts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {latestProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="py-12 text-center bg-secondary/20 rounded-2xl">
+              <p className="text-muted-foreground text-lg">Pronto subiremos nuestros mejores productos aquí.</p>
+            </div>
+          )}
         </section>
       </main>
     </div>

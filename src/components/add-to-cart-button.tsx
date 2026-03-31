@@ -7,14 +7,18 @@ import { useRouter } from "next/navigation"
 
 export function AddToCartControls({ product }: { product: ProductType }) {
   const addItem = useCart(state => state.addItem)
+  const items = useCart(state => state.items)
   const router = useRouter()
+  const isOutOfStock = product.stock === 0
 
   const handleAddToCart = () => {
+    if (isOutOfStock) return
     addItem(product)
     // Optional: add a toast notification here
   }
 
   const handleBuyNow = () => {
+    if (isOutOfStock) return
     addItem(product)
     router.push("/cart")
   }

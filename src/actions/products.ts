@@ -14,6 +14,7 @@ export async function createProduct(formData: FormData) {
     const category = formData.get("category") as string
     const description = formData.get("description") as string
     const shippingDetails = formData.get("shippingDetails") as string
+    const stock = parseInt(formData.get("stock") as string) || 0
     const imageFiles = formData.getAll("images") as File[]
 
     let imageUrls: string[] = []
@@ -71,18 +72,95 @@ export async function createProduct(formData: FormData) {
         category,
         description,
         shippingDetails,
+        stock,
         images: imageUrls
       }
     })
 
     revalidatePath("/admin/products")
-    revalidatePath(`/category/${category}`)
     revalidatePath("/")
-    
-    return { success: true, product }
-  } catch (error) {
-    console.error("Error creating product:", error)
-    return { success: false, error: "Error interno al crear producto" }
+    return product
+  } catch (err: any) {
+    console.error(err)
+    throw new Error(err.message || "Error al crear el producto")
+  }
+}
+
+export async function updateProduct(id: string, formData: FormData) {
+  try {
+    const name = formData.get("name") as string
+    const price = parseFloat(formData.get("price") as string)
+    const category = formData.get("category") as string
+    const description = formData.get("description") as string
+    const shippingDetails = formData.get("shippingDetails") as string
+    const stock = parseInt(formData.get("stock") as string) || 0
+    const imageFiles = formData.getAll("images") as File[]
+
+    let imageUrls: string[] = []
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    const validImages = imageFiles.filter(f => f && f.size > 0).slice(0, 3)
+
+    if (validImages.length > 0 && supabaseUrl && supabaseServiceKey) {
+      const supabase = createClient(supabaseUrl, supabaseServiceKey)
+      
+      for (const image of validImages) {
+        if (image.size > 2 * 1024 * 1024) throw new Error(`La imagen ${image.name} supera los 2MB.`)
+
+        const fileExt = image.name.split('.').pop()
+        const fileName = `${uuidv4()}.${fileExt}`
+        const arrBuffer = await image.arrayBuffer()
+        const buffer = new Uint8Array(arrBuffer)
+
+        const { error } = await supabase.storage
+          .from('products')
+          .upload(fileName, buffer, { contentType: image.type, upsert: false })
+
+        if (error) throw new Error("Error al subir una imagen")
+
+        const { data: { publicUrl } } = supabase.storage.from('products').getPublicUrl(fileName)
+        imageUrls.push(publicUrl)
+      }
+    }
+
+    // Only update images if new ones were successfully uploaded
+    const updateData: any = {
+      name,
+      price,
+      category,
+      description,
+      shippingDetails,
+      stock
+    }
+
+    if (imageUrls.length > 0) {
+      updateData.images = imageUrls
+    }
+
+    const existingImagesOrder = formData.get("existingImagesOrder") as string
+    if (existingImagesOrder && imageUrls.length === 0) {
+      try {
+        const parsedOrder = JSON.parse(existingImagesOrder)
+        if (Array.isArray(parsedOrder) && parsedOrder.length > 0) {
+          updateData.images = parsedOrder
+        }
+      } catch (e) {}
+    }
+
+    const product = await prisma.product.update({
+      where: { id },
+      data: updateData
+    })
+
+    revalidatePath("/admin/products")
+    revalidatePath("/")
+    revalidatePath(`/product/${id}`)
+    return product
+  } catch (err: any) {
+    console.error(err)
+    throw new Error(err.message || "Error al actualizar el producto")
   }
 }
 

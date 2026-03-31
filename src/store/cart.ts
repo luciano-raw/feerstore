@@ -52,7 +52,7 @@ export const useCart = create<CartStore>()(
       totalPrice: () => get().items.reduce((total, item) => total + item.price * item.quantity, 0),
     }),
     {
-      name: 'feer-store-cart',
+      name: 'ferlu-store-cart',
     }
   )
 )

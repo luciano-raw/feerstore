@@ -40,10 +40,14 @@ export default async function ProductDetailPage({
                 ${product.price.toLocaleString("es-CL")}
               </p>
               
-              <div className="prose dark:prose-invert mb-8">
-                <p className="text-muted-foreground text-lg leading-relaxed">
+              <div className="mb-8">
+                <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-3">
+                  <span className="w-8 h-1 bg-primary rounded-full"></span>
+                  Acerca de este producto
+                </h3>
+                <div className="text-muted-foreground text-[1.05rem] leading-relaxed whitespace-pre-wrap bg-secondary/10 p-6 rounded-2xl border border-secondary/30 shadow-sm">
                   {product.description}
-                </p>
+                </div>
               </div>
 
               <AddToCartControls product={product} />
