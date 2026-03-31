@@ -4,20 +4,25 @@ import { useCart } from "@/store/cart"
 import { Minus, Plus, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { generateWhatsAppLink } from "@/lib/whatsapp"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function CartPage() {
-  const { items, updateQuantity, removeItem, totalPrice, clearCart } = useCart()
+  const { items, updateQuantity, removeItem, totalPrice, clearCart, vipDiscount } = useCart()
   const [name, setName] = useState("")
+  const [mounted, setMounted] = useState(false)
+
+  // Avoid hydration mismatch since we rely on persistent store
+  useEffect(() => setMounted(true), [])
 
   const total = totalPrice()
+  const rawTotal = items.reduce((acc, i) => acc + i.price * i.quantity, 0)
 
   const handleCheckout = () => {
     if (!name.trim()) {
       alert("Por favor, ingresa tu nombre para continuar el pedido.")
       return
     }
-    const whatsappUrl = generateWhatsAppLink(items, name)
+    const whatsappUrl = generateWhatsAppLink(items, name, vipDiscount)
     window.open(whatsappUrl, "_blank")
     clearCart()
   }
@@ -47,7 +52,14 @@ export default function CartPage() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-lg line-clamp-1">{item.name}</h3>
-                    <p className="text-primary font-bold">${item.price.toLocaleString("es-CL")}</p>
+                    {mounted && vipDiscount > 0 ? (
+                      <div className="flex flex-col">
+                        <span className="font-bold text-primary">${(item.price * (1 - vipDiscount / 100)).toLocaleString("es-CL")}</span>
+                        <span className="text-xs text-muted-foreground line-through">${item.price.toLocaleString("es-CL")}</span>
+                      </div>
+                    ) : (
+                      <p className="text-primary font-bold">${item.price.toLocaleString("es-CL")}</p>
+                    )}
                   </div>
                   <div className="flex items-center gap-3">
                     <button 
@@ -79,8 +91,14 @@ export default function CartPage() {
               <h2 className="text-xl font-bold mb-4">Resumen del Pedido</h2>
               <div className="flex justify-between mb-2">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>${total.toLocaleString("es-CL")}</span>
+                <span>${mounted ? rawTotal.toLocaleString("es-CL") : "..."}</span>
               </div>
+              {mounted && vipDiscount > 0 && (
+                <div className="flex justify-between mb-2 text-amber-500 font-bold">
+                  <span>Descuento VIP ({vipDiscount}%)</span>
+                  <span>-${(rawTotal * (vipDiscount / 100)).toLocaleString("es-CL")}</span>
+                </div>
+              )}
               <div className="flex justify-between mb-4 pb-4 border-b">
                 <span className="text-muted-foreground">Envío</span>
                 <span className="text-sm">Por acordar</span>

@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ShoppingBag } from "lucide-react"
+import { useCart } from "@/store/cart"
 
 export type ProductType = {
   id: string
@@ -16,7 +17,16 @@ export type ProductType = {
 
 export function ProductCard({ product }: { product: ProductType }) {
   const [isHovered, setIsHovered] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const isOutOfStock = product.stock === 0
+  const vipDiscount = useCart((state) => state.vipDiscount)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const hasDiscount = mounted && vipDiscount > 0
+  const finalPrice = hasDiscount ? product.price * (1 - vipDiscount / 100) : product.price
 
   return (
     <div 
@@ -51,9 +61,16 @@ export function ProductCard({ product }: { product: ProductType }) {
           </h3>
         </Link>
         <div className="flex items-center justify-between mt-2">
-          <span className="font-bold text-primary">
-            ${product.price.toLocaleString("es-CL")}
-          </span>
+          <div className="flex flex-col">
+            <span className="font-bold text-primary text-lg">
+              ${finalPrice.toLocaleString("es-CL")}
+            </span>
+            {hasDiscount && (
+              <span className="text-xs text-muted-foreground line-through">
+                ${product.price.toLocaleString("es-CL")} (-{vipDiscount}%)
+              </span>
+            )}
+          </div>
           <button 
             className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
             title="Añadir al carrito"

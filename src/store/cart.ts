@@ -8,6 +8,8 @@ export interface CartItem extends ProductType {
 
 interface CartStore {
   items: CartItem[]
+  vipDiscount: number
+  setVipDiscount: (discount: number) => void
   addItem: (product: ProductType) => void
   removeItem: (productId: string) => void
   updateQuantity: (productId: string, quantity: number) => void
@@ -20,6 +22,8 @@ export const useCart = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      vipDiscount: 0,
+      setVipDiscount: (discount) => set({ vipDiscount: discount }),
       addItem: (product) => {
         const items = get().items
         const existingItem = items.find((item) => item.id === product.id)
@@ -49,7 +53,7 @@ export const useCart = create<CartStore>()(
       },
       clearCart: () => set({ items: [] }),
       totalItems: () => get().items.reduce((total, item) => total + item.quantity, 0),
-      totalPrice: () => get().items.reduce((total, item) => total + item.price * item.quantity, 0),
+      totalPrice: () => get().items.reduce((total, item) => total + (item.price * (1 - get().vipDiscount / 100)) * item.quantity, 0),
     }),
     {
       name: 'ferlu-store-cart',

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/header";
+import { DiscountProvider } from "@/components/discount-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,11 +22,14 @@ export const metadata: Metadata = {
   description: "Tu tienda favorita de joyas y cuidado capilar",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await currentUser();
+  const discount = (user?.publicMetadata?.discount as number) || 0;
+
   return (
     <ClerkProvider>
       <html lang="es" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable}`}>
@@ -47,6 +52,7 @@ export default function RootLayout({
         </head>
         <body className="min-h-screen flex flex-col antialiased" suppressHydrationWarning>
           <ThemeProvider>
+            <DiscountProvider discount={discount} />
             <Header />
             {children}
           </ThemeProvider>

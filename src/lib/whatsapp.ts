@@ -1,6 +1,6 @@
 import { CartItem } from "@/store/cart"
 
-export function generateWhatsAppLink(items: CartItem[], customerName: string) {
+export function generateWhatsAppLink(items: CartItem[], customerName: string, vipDiscount: number = 0) {
   // Número actualizado entregado por el usuario (formato internacional sin el signo '+')
   const phoneNumber = "56930531304" 
   
@@ -22,7 +22,16 @@ export function generateWhatsAppLink(items: CartItem[], customerName: string) {
     message += `-------------------------------------------------\n`
   })
   
-  message += `\n💰 *TOTAL A PAGAR:* $${total.toLocaleString("es-CL")}\n\n`
+  if (vipDiscount > 0) {
+    const discountAmount = total * (vipDiscount / 100)
+    const finalTotal = total - discountAmount
+    message += `\n💳 *Subtotal:* $${total.toLocaleString("es-CL")}\n`
+    message += `🎁 *CLIENTE VIP DETECTADO (-${vipDiscount}%):* -$${discountAmount.toLocaleString("es-CL")}\n`
+    message += `💰 *TOTAL A PAGAR:* $${finalTotal.toLocaleString("es-CL")}\n\n`
+  } else {
+    message += `\n💰 *TOTAL A PAGAR:* $${total.toLocaleString("es-CL")}\n\n`
+  }
+  
   message += `Quedo a la espera de las instrucciones para realizar la transferencia y coordinar el envío/retiro. ¡Muchas gracias! ✨`
 
   const encodedMessage = encodeURIComponent(message)

@@ -13,10 +13,11 @@ export default async function AdminLayout({
   }
   
   const email = user.primaryEmailAddress?.emailAddress
+  const role = user.publicMetadata?.role as string | undefined
   
-  // Verificación estricta del email de administrador
-  if (email !== "luciano.raw04@gmail.com") {
-    // Si no es el admin, lo regresamos a la tienda
+  // Verificación estricta del email de administrador o rol delegado
+  if (email !== "luciano.raw04@gmail.com" && role !== "admin") {
+    // Si no es el admin original ni un admin delegado, lo regresamos a la tienda
     redirect("/")
   }
 
