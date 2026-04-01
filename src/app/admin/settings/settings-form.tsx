@@ -133,7 +133,7 @@ export function SettingsForm({ initialData }: { initialData: any }) {
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   <ImageIcon className="w-10 h-10 text-muted-foreground mb-3" />
                   <p className="mb-1 text-sm text-foreground font-bold">Haz clic para subir un Banner</p>
-                  <p className="text-xs text-muted-foreground">PNG, JPG (MAX. 5MB). Se recomienda formato rectangular panorámico.</p>
+                  <p className="text-xs text-muted-foreground">Recomendado: 1200 x 300 píxeles. (PNG, JPG, MAX 5MB).</p>
                 </div>
                 <input name="heroBannerImage" type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
               </label>

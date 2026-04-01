@@ -49,18 +49,6 @@ export default async function Home() {
           <div className="absolute bottom-10 right-20 w-32 h-32 bg-accent/20 rounded-full blur-2xl flex" />
         </section>
 
-        {settings?.bannerIsActive && settings.heroBannerUrl && (
-          <section className="container mx-auto px-4 mt-12 md:mt-16">
-            <div className="w-full max-w-6xl mx-auto rounded-3xl overflow-hidden aspect-[4/1] md:aspect-[6/1] shadow-sm relative group bg-secondary/30">
-              <img 
-                src={settings.heroBannerUrl} 
-                alt="FerLu Store Promoción Especial" 
-                className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-[1.03]" 
-              />
-            </div>
-          </section>
-        )}
-
         {/* Featured Products Section */}
         <section className="container mx-auto px-4 py-16 md:py-24">
           <div className="flex flex-col items-center mb-12 text-center">
@@ -85,6 +73,22 @@ export default async function Home() {
             </div>
           )}
         </section>
+
+        {/* Promotional Banner (Below Featured Products) */}
+        {settings?.bannerIsActive && settings.heroBannerUrl && (
+          <section className="container mx-auto px-4 pb-16 md:pb-24">
+            <div className="w-full max-w-6xl mx-auto rounded-[2rem] overflow-hidden shadow-lg relative group bg-secondary/30">
+              {/* Aspect Ratio: Mobile ~3:1 (e.g. 600x200), Desktop ~4:1 (e.g. 1200x300) */}
+              <div className="aspect-[3/1] md:aspect-[4/1]">
+                <img 
+                  src={settings.heroBannerUrl} 
+                  alt="FerLu Store Promoción Especial" 
+                  className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-[1.03]" 
+                />
+              </div>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );
