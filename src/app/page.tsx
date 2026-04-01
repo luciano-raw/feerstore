@@ -72,6 +72,15 @@ export default async function Home() {
               <p className="text-muted-foreground text-lg">Pronto subiremos nuestros mejores productos aquí.</p>
             </div>
           )}
+
+          <div className="mt-12 flex justify-center">
+            <Link 
+              href="/category/capilares_corporales" 
+              className="inline-flex h-12 items-center justify-center rounded-full border-2 border-primary bg-transparent px-8 text-base font-bold text-primary shadow-sm transition-all hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:scale-105 active:scale-95"
+            >
+              Ver todos los productos
+            </Link>
+          </div>
         </section>
 
         {/* Promotional Banner (Below Featured Products) */}
