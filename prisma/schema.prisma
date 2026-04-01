@@ -54,3 +54,12 @@ model OrderItem {
   quantity  Int
   price     Float
 }
+
+model StoreSettings {
+  id                 String   @id @default("global")
+  heroBannerUrl      String?  
+  bannerIsActive     Boolean  @default(false)
+  storeNotice        String?  
+  whatsappNumber     String   @default("56930531304")
+  updatedAt          DateTime @updatedAt
+}

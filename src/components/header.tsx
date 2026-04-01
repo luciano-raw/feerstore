@@ -5,15 +5,23 @@ import { CartIcon } from "./cart-icon"
 import { MobileMenu } from "./mobile-menu"
 import { SignInButton, UserButton, SignOutButton } from "@clerk/nextjs"
 import { auth, currentUser } from "@clerk/nextjs/server"
+import { getStoreSettings } from "@/actions/settings"
 
 export async function Header() {
   const { userId } = await auth()
   const user = await currentUser()
+  const settings = await getStoreSettings()
   const role = user?.publicMetadata?.role as string | undefined
   const isAdmin = user?.primaryEmailAddress?.emailAddress === "luciano.raw04@gmail.com" || role === "admin"
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <>
+      {settings?.storeNotice && (
+        <div className="w-full bg-primary text-primary-foreground py-1.5 px-4 text-center text-xs md:text-sm font-bold leading-tight">
+          {settings.storeNotice}
+        </div>
+      )}
+      <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6 md:gap-8">
           <Link href="/" className="flex items-center space-x-2">
             <span className="text-xl font-bold tracking-tight text-primary">
@@ -83,5 +91,6 @@ export async function Header() {
         </div>
       </div>
     </header>
+    </>
   )
 }

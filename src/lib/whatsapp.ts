@@ -1,8 +1,8 @@
 import { CartItem } from "@/store/cart"
 
-export function generateWhatsAppLink(items: CartItem[], customerName: string, vipDiscount: number = 0) {
-  // Número actualizado entregado por el usuario (formato internacional sin el signo '+')
-  const phoneNumber = "56930531304" 
+export function generateWhatsAppLink(items: CartItem[], customerName: string, vipDiscount: number = 0, contactNumber?: string) {
+  // Use the dynamic number if provided, otherwise fallback
+  const phoneNumber = contactNumber || "56930531304" 
   
   let message = `¡Hola! 👋 Soy *${customerName}* y quiero confirmar el siguiente pedido:\n\n`
   

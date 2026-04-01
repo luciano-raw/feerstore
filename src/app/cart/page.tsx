@@ -10,6 +10,8 @@ export default function CartPage() {
   const { items, updateQuantity, removeItem, totalPrice, clearCart, vipDiscount } = useCart()
   const [name, setName] = useState("")
   const [mounted, setMounted] = useState(false)
+  
+  const [isProcessing, setIsProcessing] = useState(false)
 
   // Avoid hydration mismatch since we rely on persistent store
   useEffect(() => setMounted(true), [])
@@ -17,14 +19,28 @@ export default function CartPage() {
   const total = totalPrice()
   const rawTotal = items.reduce((acc, i) => acc + i.price * i.quantity, 0)
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!name.trim()) {
       alert("Por favor, ingresa tu nombre para continuar el pedido.")
       return
     }
-    const whatsappUrl = generateWhatsAppLink(items, name, vipDiscount)
-    window.open(whatsappUrl, "_blank")
-    clearCart()
+    
+    setIsProcessing(true)
+    try {
+      // Dynamic fetch of store settings
+      const req = await fetch('/api/settings') // We need an API route, wait. No, cart is client side!
+      // Actually we have a Server Action getStoreSettings! Yes!
+      const { getStoreSettings } = await import("@/actions/settings")
+      const settings = await getStoreSettings()
+      
+      const whatsappUrl = generateWhatsAppLink(items, name, vipDiscount, settings.whatsappNumber)
+      window.open(whatsappUrl, "_blank")
+      clearCart()
+    } catch (e) {
+      alert("Error al procesar el enlace. Intenta nuevamente.")
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
   return (

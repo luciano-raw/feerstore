@@ -2,14 +2,20 @@ import Link from "next/link"
 import { PrismaClient } from "@prisma/client"
 import { ProductCard } from "@/components/product-card"
 import { SearchBar } from "@/components/search-bar"
+import { getStoreSettings } from "@/actions/settings"
 
 const prisma = new PrismaClient()
 
 export default async function Home() {
   const latestProducts = await prisma.product.findMany({
+    where: {
+      category: { not: 'joyas' }
+    },
     orderBy: { createdAt: 'desc' },
     take: 8
   })
+  
+  const settings = await getStoreSettings()
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -42,6 +48,18 @@ export default async function Home() {
           <div className="absolute top-1/4 left-10 w-24 h-24 bg-primary/20 rounded-full blur-2xl" />
           <div className="absolute bottom-10 right-20 w-32 h-32 bg-accent/20 rounded-full blur-2xl flex" />
         </section>
+
+        {settings?.bannerIsActive && settings.heroBannerUrl && (
+          <section className="container mx-auto px-4 mt-12 md:mt-16">
+            <div className="w-full max-w-6xl mx-auto rounded-3xl overflow-hidden aspect-[4/1] md:aspect-[6/1] shadow-sm relative group bg-secondary/30">
+              <img 
+                src={settings.heroBannerUrl} 
+                alt="FerLu Store Promoción Especial" 
+                className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-[1.03]" 
+              />
+            </div>
+          </section>
+        )}
 
         {/* Featured Products Section */}
         <section className="container mx-auto px-4 py-16 md:py-24">
