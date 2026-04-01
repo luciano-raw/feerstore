@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion"
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat()
+  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat() as any
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
