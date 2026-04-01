@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { updateStoreSettings } from "@/actions/settings"
 import { Save, Image as ImageIcon, MessageCircle, Megaphone, Trash2 } from "lucide-react"
 
@@ -8,6 +8,7 @@ export function SettingsForm({ initialData }: { initialData: any }) {
   const [loading, setLoading] = useState(false)
   const [previewUrl, setPreviewUrl] = useState<string | null>(initialData?.heroBannerUrl || null)
   const [removeBanner, setRemoveBanner] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -21,6 +22,7 @@ export function SettingsForm({ initialData }: { initialData: any }) {
   const handleRemove = () => {
     setPreviewUrl(null)
     setRemoveBanner(true)
+    if (fileInputRef.current) fileInputRef.current.value = ""
   }
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -115,10 +117,22 @@ export function SettingsForm({ initialData }: { initialData: any }) {
             </div>
           </label>
 
-          <div className="space-y-2">
+          <div className="space-y-4">
             <p className="text-sm font-medium">Imagen del Banner</p>
+            
+            {/* El Input original siempre debe existir en el DOM para que FormData lo recoja */}
+            <input 
+              ref={fileInputRef}
+              id="heroBannerInput"
+              name="heroBannerImage" 
+              type="file" 
+              className="hidden" 
+              accept="image/*" 
+              onChange={handleImageChange} 
+            />
+
             {previewUrl ? (
-              <div className="relative rounded-xl overflow-hidden border aspect-[4/1] bg-secondary flex items-center justify-center group">
+              <div className="relative rounded-xl overflow-hidden border aspect-[4/1] bg-secondary flex items-center justify-center group shadow-sm">
                 <img src={previewUrl} alt="Banner Preview" className="w-full h-full object-cover" />
                 <button 
                   type="button"
@@ -129,13 +143,12 @@ export function SettingsForm({ initialData }: { initialData: any }) {
                 </button>
               </div>
             ) : (
-              <label className="flex flex-col items-center justify-center w-full aspect-[4/1] md:aspect-[5/1] border-2 border-dashed rounded-xl cursor-pointer bg-secondary/20 hover:bg-secondary/50 hover:border-primary transition-all">
+              <label htmlFor="heroBannerInput" className="flex flex-col items-center justify-center w-full aspect-[4/1] md:aspect-[5/1] border-2 border-dashed rounded-xl cursor-pointer bg-secondary/20 hover:bg-secondary/50 hover:border-primary transition-all">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   <ImageIcon className="w-10 h-10 text-muted-foreground mb-3" />
                   <p className="mb-1 text-sm text-foreground font-bold">Haz clic para subir un Banner</p>
                   <p className="text-xs text-muted-foreground">Recomendado: 1200 x 300 píxeles. (PNG, JPG, MAX 5MB).</p>
                 </div>
-                <input name="heroBannerImage" type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
               </label>
             )}
           </div>
