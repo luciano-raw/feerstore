@@ -9,7 +9,8 @@ import { auth, currentUser } from "@clerk/nextjs/server"
 export async function Header() {
   const { userId } = await auth()
   const user = await currentUser()
-  const isAdmin = user?.primaryEmailAddress?.emailAddress === "luciano.raw04@gmail.com"
+  const role = user?.publicMetadata?.role as string | undefined
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === "luciano.raw04@gmail.com" || role === "admin"
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
