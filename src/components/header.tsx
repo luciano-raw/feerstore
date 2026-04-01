@@ -3,7 +3,7 @@ import { Menu } from "lucide-react"
 import { ThemeToggle } from "./theme-toggle"
 import { CartIcon } from "./cart-icon"
 import { MobileMenu } from "./mobile-menu"
-import { SignInButton, UserButton } from "@clerk/nextjs"
+import { SignInButton, UserButton, SignOutButton } from "@clerk/nextjs"
 import { auth, currentUser } from "@clerk/nextjs/server"
 
 export async function Header() {
@@ -75,9 +75,16 @@ export async function Header() {
                   </SignInButton>
                 </div>
               ) : (
-                <div className="mt-2 flex items-center gap-3">
-                  <UserButton />
-                  <span className="text-sm text-muted-foreground font-medium">Mi Cuenta</span>
+                <div className="mt-2 flex flex-col gap-5 border-t pt-4">
+                  <div className="flex items-center gap-3">
+                    <UserButton />
+                    <span className="text-base text-foreground font-bold">Mi Cuenta</span>
+                  </div>
+                  <SignOutButton>
+                    <button className="text-left text-lg font-medium text-destructive hover:text-red-500 transition-colors">
+                      Cerrar Sesión
+                    </button>
+                  </SignOutButton>
                 </div>
               )}
             </nav>
