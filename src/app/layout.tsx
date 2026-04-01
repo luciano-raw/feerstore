@@ -18,8 +18,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ferlu.store"),
   title: "FerLu Store",
-  description: "Tu tienda favorita de joyas y cuidado capilar",
+  description: "Tu tienda especializada en cuidado capilar y corporal, envíos a todo Chile.",
+  openGraph: {
+    title: "FerLu Store | Cuidado Capilar y Corporal",
+    description: "Tu tienda de belleza favorita. Envíos nacionales y entregas en Región del Maule (Talca, Linares, Longaví).",
+    url: "https://ferlu.store",
+    siteName: "FerLu Store",
+    locale: "es_CL",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FerLu Store",
+    description: "Tu tienda especializada en cuidado capilar y corporal, envíos a todo Chile.",
+  },
 };
 
 export default async function RootLayout({
