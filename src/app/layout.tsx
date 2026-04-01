@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/header";
+import { ChatWidget } from "@/components/chat-widget";
 import { DiscountProvider } from "@/components/discount-provider";
 import "./globals.css";
 
@@ -69,6 +70,7 @@ export default async function RootLayout({
             <DiscountProvider discount={discount} />
             <Header />
             {children}
+            <ChatWidget />
           </ThemeProvider>
         </body>
       </html>
