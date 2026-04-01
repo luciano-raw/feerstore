@@ -174,3 +174,18 @@ export async function deleteProduct(id: string) {
   await prisma.product.delete({ where: { id } })
   revalidatePath("/admin/products")
 }
+
+export async function updateProductStock(id: string, stock: number) {
+  try {
+    await prisma.product.update({
+      where: { id },
+      data: { stock }
+    })
+    revalidatePath("/admin/inventory")
+    revalidatePath("/") // To update main store availability if needed
+    revalidatePath(`/product/${id}`)
+  } catch (error) {
+    console.error("Error updating stock:", error)
+    throw new Error("Failed to update stock")
+  }
+}

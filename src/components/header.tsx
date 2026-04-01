@@ -27,12 +27,6 @@ export async function Header() {
             >
               Capilares y Cuidado
             </Link>
-            <Link
-              href="/category/joyas"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Joyas
-            </Link>
           </nav>
         </div>
         <div className="flex items-center gap-4">
@@ -59,9 +53,6 @@ export async function Header() {
             <nav className="flex flex-col gap-4">
               <Link href="/category/capilares_corporales" className="text-lg font-medium hover:text-primary transition-colors border-b pb-2">
                 Capilares y Corporal
-              </Link>
-              <Link href="/category/joyas" className="text-lg font-medium hover:text-primary transition-colors border-b pb-2">
-                Joyas
               </Link>
               {isAdmin && (
                 <Link href="/admin" className="text-lg font-bold text-primary hover:text-primary/80 transition-colors border-b pb-2">

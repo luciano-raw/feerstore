@@ -22,21 +22,15 @@ export default async function Home() {
                   Resalta tu Belleza
                 </h1>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                  Descubre nuestra colección exclusiva de cuidado capilar, corporal y joyas elegantes diseñadas para ti.
+                  Descubre nuestra colección exclusiva de cuidado capilar y corporal, diseñada para potenciar tu amor propio.
                 </p>
               </div>
               <div className="space-x-4">
                 <Link
                   href="/category/capilares_corporales"
-                  className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-8 text-base font-bold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:scale-105 active:scale-95"
                 >
                   Cuidado Personal
-                </Link>
-                <Link
-                  href="/category/joyas"
-                  className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                >
-                  Ver Joyas
                 </Link>
               </div>
               
@@ -57,7 +51,7 @@ export default async function Home() {
             </h2>
             <div className="w-24 h-1 bg-primary rounded-full mb-6"></div>
             <p className="text-lg text-muted-foreground max-w-2xl">
-              Descubre los últimos ingresos de FerLu Store en joyería exclusiva y cuidado personal. Todo diseñado para resaltar lo mejor de ti.
+              Descubre los últimos ingresos de FerLu Store en cuidado personal y capilar. Todo seleccionado para resaltar lo mejor de ti.
             </p>
           </div>
 
