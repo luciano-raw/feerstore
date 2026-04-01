@@ -40,7 +40,7 @@ export async function updateStoreSettings(formData: FormData) {
       if (supabaseUrl && supabaseServiceKey) {
         const supabase = createClient(supabaseUrl, supabaseServiceKey)
         
-        if (bannerFile.size > 5 * 1024 * 1024) throw new Error("La imagen del banner es muy grande (Max 5MB)")
+        if (bannerFile.size > 10 * 1024 * 1024) throw new Error("La imagen del banner es muy grande (Max 10MB)")
 
         const fileExt = bannerFile.name.split('.').pop()
         const fileName = `banner-${uuidv4()}.${fileExt}`
