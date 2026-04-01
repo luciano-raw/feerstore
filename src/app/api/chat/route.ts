@@ -47,5 +47,5 @@ export async function POST(req: Request) {
     system: systemPrompt,
   })
 
-  return result.toDataStreamResponse()
+  return result.toTextStreamResponse()
 }

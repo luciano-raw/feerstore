@@ -60,7 +60,7 @@ export function ChatWidget() {
                 </div>
               )}
               
-              {messages.map((m) => (
+              {messages.map((m: any) => (
                 <div 
                   key={m.id} 
                   className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
