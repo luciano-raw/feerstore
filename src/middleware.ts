@@ -1,12 +1,24 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 const isProtectedRoute = createRouteMatcher(["/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
+  const hostname = req.headers.get("host") || "";
+
+  // Redirección canónica de www a sin-www
+  if (hostname.startsWith("www.ferlu.store")) {
+    const url = req.nextUrl.clone();
+    url.host = "ferlu.store";
+    url.protocol = "https";
+    return NextResponse.redirect(url, 301);
+  }
+
   if (isProtectedRoute(req)) {
       await auth.protect();
   }
 });
+
 
 export const config = {
   matcher: [
