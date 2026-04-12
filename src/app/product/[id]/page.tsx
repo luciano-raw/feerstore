@@ -1,5 +1,6 @@
 import { AddToCartControls } from "@/components/add-to-cart-button"
 import { ProductGallery } from "@/components/product-gallery"
+import { ShareProduct } from "@/components/share-product"
 import { PrismaClient } from "@prisma/client"
 import { notFound } from "next/navigation"
 
@@ -51,6 +52,8 @@ export default async function ProductDetailPage({
               </div>
 
               <AddToCartControls product={product} />
+              
+              <ShareProduct productName={product.name} productId={product.id} />
               
               <div className="mt-8 pt-6 border-t space-y-4">
                 {product.shippingDetails && (
