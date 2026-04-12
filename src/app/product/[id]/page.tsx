@@ -2,9 +2,31 @@ import { AddToCartControls } from "@/components/add-to-cart-button"
 import { ProductGallery } from "@/components/product-gallery"
 import { ShareProduct } from "@/components/share-product"
 import { PrismaClient } from "@prisma/client"
+import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 const prisma = new PrismaClient()
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const product = await prisma.product.findUnique({ where: { id } })
+
+  if (!product) return {}
+
+  return {
+    title: `${product.name} | FerLu Store`,
+    description: product.description.substring(0, 160),
+    openGraph: {
+      title: product.name,
+      description: product.description.substring(0, 160),
+      type: "website",
+    },
+  }
+}
 
 export default async function ProductDetailPage({
   params,
