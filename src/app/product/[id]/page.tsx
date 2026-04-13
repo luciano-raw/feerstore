@@ -1,6 +1,7 @@
 import { AddToCartControls } from "@/components/add-to-cart-button"
 import { ProductGallery } from "@/components/product-gallery"
 import { ShareProduct } from "@/components/share-product"
+import { ProductSchema } from "@/components/json-ld"
 import { PrismaClient } from "@prisma/client"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
@@ -17,13 +18,24 @@ export async function generateMetadata({
 
   if (!product) return {}
 
+  const isBubbaluu = product.name.toLowerCase().includes('bubbaluu')
+  const title = isBubbaluu 
+    ? `${product.name} | Bubbaluu Chile | FerLu Store`
+    : `${product.name} | FerLu Store`
+  
+  const description = `${product.description.substring(0, 120)}... Compra en FerLu Store con envíos a Talca, Linares, Longaví y todo Chile. Especialistas en belleza.`
+
   return {
-    title: `${product.name} | FerLu Store`,
-    description: product.description.substring(0, 160),
+    title,
+    description,
     openGraph: {
-      title: product.name,
-      description: product.description.substring(0, 160),
+      title,
+      description,
       type: "website",
+      images: product.images.length > 0 ? [product.images[0]] : [],
+    },
+    alternates: {
+      canonical: `https://ferlu.store/product/${id}`,
     },
   }
 }
@@ -99,6 +111,7 @@ export default async function ProductDetailPage({
           </div>
         </div>
       </main>
+      <ProductSchema product={product} />
     </div>
   )
 }

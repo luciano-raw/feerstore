@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/header";
 import { ChatWidget } from "@/components/chat-widget";
 import { DiscountProvider } from "@/components/discount-provider";
+import { OrganizationSchema } from "@/components/json-ld";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,11 +21,23 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ferlu.store"),
-  title: "FerLu Store",
-  description: "Tu tienda especializada en cuidado capilar y corporal, envíos a todo Chile.",
+  title: {
+    default: "FerLu Store | Cuidado Capilar y Corporal en Chile",
+    template: "%s | FerLu Store"
+  },
+  description: "Tu tienda de belleza favorita en Chile. Especialistas en cuidado capilar, corporal y productos Bubbaluu. Envíos a todo el país y entregas en Región del Maule (Talca, Linares, Longaví).",
+  keywords: ["belleza", "cuidado capilar", "cuidado corporal", "bubbaluu chile", "bubbaluu talca", "tienda de belleza talca", "cosméticos chile"],
+  authors: [{ name: "FerLu Store" }],
+  creator: "FerLu Store",
+  publisher: "FerLu Store",
+  formatDetection: {
+    email: false,
+    address: true,
+    telephone: true,
+  },
   openGraph: {
-    title: "FerLu Store | Cuidado Capilar y Corporal",
-    description: "Tu tienda de belleza favorita. Envíos nacionales y entregas en Región del Maule (Talca, Linares, Longaví).",
+    title: "FerLu Store | Belleza y Cuidado Personal en Chile",
+    description: "Encuentra los mejores productos Bubbaluu y cuidado capilar. Envíos nacionales y entregas locales en Talca, Linares y Longaví.",
     url: "https://ferlu.store",
     siteName: "FerLu Store",
     locale: "es_CL",
@@ -32,8 +45,22 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "FerLu Store",
-    description: "Tu tienda especializada en cuidado capilar y corporal, envíos a todo Chile.",
+    title: "FerLu Store | Tu Tienda de Belleza en Chile",
+    description: "Tienda especializada en cuidado capilar y corporal con lo mejor de Bubbaluu. Envíos a todo Chile.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: "https://ferlu.store",
   },
 };
 
@@ -70,6 +97,7 @@ export default async function RootLayout({
             <DiscountProvider discount={discount} />
             <Header />
             {children}
+            <OrganizationSchema />
             <ChatWidget />
           </ThemeProvider>
         </body>
