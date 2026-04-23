@@ -9,7 +9,7 @@ export default async function AdminLayout({
   const user = await currentUser()
   
   if (!user) {
-    redirect("/sign-in")
+    redirect("/")
   }
   
   const email = user.primaryEmailAddress?.emailAddress
