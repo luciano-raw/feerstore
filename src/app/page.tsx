@@ -7,13 +7,16 @@ import { getStoreSettings } from "@/actions/settings"
 const prisma = new PrismaClient()
 
 export default async function Home() {
-  const latestProducts = await prisma.product.findMany({
+  const recentProducts = await prisma.product.findMany({
     where: {
       category: { not: 'joyas' }
     },
     orderBy: { createdAt: 'desc' },
-    take: 8
+    take: 24
   })
+  
+  // Shuffle array para mostrar productos destacados aleatorios
+  const latestProducts = [...recentProducts].sort(() => Math.random() - 0.5).slice(0, 8)
   
   const settings = await getStoreSettings()
 
@@ -62,7 +65,7 @@ export default async function Home() {
           </div>
 
           {latestProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-6 lg:gap-8">
               {latestProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

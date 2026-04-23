@@ -46,36 +46,37 @@ export function ProductCard({ product }: { product: ProductType }) {
           />
         ))}
         {isOutOfStock && (
-          <div className="absolute top-3 left-3 z-10">
-            <span className="bg-destructive/90 backdrop-blur text-destructive-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-              Agotado Temporalmente
+          <div className="absolute top-2 left-2 md:top-3 md:left-3 z-10">
+            <span className="bg-destructive/90 backdrop-blur text-destructive-foreground text-[10px] md:text-xs font-bold px-2 py-1 md:px-3 md:py-1.5 rounded-full shadow-sm">
+              <span className="md:hidden">Agotado</span>
+              <span className="hidden md:inline">Agotado Temporalmente</span>
             </span>
           </div>
         )}
       </Link>
       
-      <div className="p-4 flex flex-col gap-2">
+      <div className="p-3 md:p-4 flex flex-col gap-1.5 md:gap-2">
         <Link href={`/product/${product.id}`}>
-          <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors">
+          <h3 className="font-semibold text-sm md:text-lg line-clamp-2 md:line-clamp-1 group-hover:text-primary transition-colors leading-tight">
             {product.name}
           </h3>
         </Link>
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center justify-between mt-1 md:mt-2">
           <div className="flex flex-col">
-            <span className="font-bold text-primary text-lg">
+            <span className="font-bold text-primary text-base md:text-lg">
               ${finalPrice.toLocaleString("es-CL")}
             </span>
             {hasDiscount && (
-              <span className="text-xs text-muted-foreground line-through">
+              <span className="text-[10px] md:text-xs text-muted-foreground line-through">
                 ${product.price.toLocaleString("es-CL")} (-{vipDiscount}%)
               </span>
             )}
           </div>
           <button 
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
+            className="flex h-7 w-7 md:h-8 md:w-8 items-center justify-center rounded-full bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors shrink-0"
             title="Añadir al carrito"
           >
-            <ShoppingBag className="h-4 w-4" />
+            <ShoppingBag className="h-3.5 w-3.5 md:h-4 md:w-4" />
           </button>
         </div>
       </div>
