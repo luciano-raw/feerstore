@@ -13,7 +13,8 @@ export async function createProduct(formData: FormData) {
     const price = parseFloat(formData.get("price") as string)
     const category = formData.get("category") as string
     const description = formData.get("description") as string
-    const shippingDetails = formData.get("shippingDetails") as string
+    const deliveryMethod = formData.get("deliveryMethod") as string
+    const pickupPoints = formData.getAll("pickupPoints") as string[]
     const stock = parseInt(formData.get("stock") as string) || 0
     const imageFiles = formData.getAll("images") as File[]
 
@@ -71,7 +72,8 @@ export async function createProduct(formData: FormData) {
         price,
         category,
         description,
-        shippingDetails,
+        deliveryMethod,
+        pickupPoints,
         stock,
         images: imageUrls
       }
@@ -92,7 +94,8 @@ export async function updateProduct(id: string, formData: FormData) {
     const price = parseFloat(formData.get("price") as string)
     const category = formData.get("category") as string
     const description = formData.get("description") as string
-    const shippingDetails = formData.get("shippingDetails") as string
+    const deliveryMethod = formData.get("deliveryMethod") as string
+    const pickupPoints = formData.getAll("pickupPoints") as string[]
     const stock = parseInt(formData.get("stock") as string) || 0
     const imageFiles = formData.getAll("images") as File[]
 
@@ -131,7 +134,8 @@ export async function updateProduct(id: string, formData: FormData) {
       price,
       category,
       description,
-      shippingDetails,
+      deliveryMethod,
+      pickupPoints,
       stock
     }
 

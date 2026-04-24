@@ -5,6 +5,7 @@ import { ProductSchema } from "@/components/json-ld"
 import { PrismaClient } from "@prisma/client"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { Truck, MapPin } from "lucide-react"
 
 const prisma = new PrismaClient()
 
@@ -89,21 +90,42 @@ export default async function ProductDetailPage({
               
               <ShareProduct productName={product.name} productId={product.id} />
               
-              <div className="mt-8 pt-6 border-t space-y-4">
-                {product.shippingDetails && (
-                  <div className="p-4 bg-secondary/30 rounded-lg">
-                    <h3 className="text-sm font-bold mb-1">Información de Envío/Retiro</h3>
-                    <p className="text-sm text-foreground/80">{product.shippingDetails}</p>
+              <div className="mt-8 pt-6 border-t space-y-6">
+                {(product.deliveryMethod || (product.pickupPoints && product.pickupPoints.length > 0) || product.shippingDetails) && (
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-bold flex items-center gap-2 border-l-4 border-primary pl-2 uppercase tracking-wider text-muted-foreground">
+                      Envío y Retiro
+                    </h3>
+                    
+                    {(product.deliveryMethod || product.shippingDetails) && (
+                      <div className="flex items-center gap-3 text-sm font-medium bg-secondary/10 p-3 rounded-lg border border-secondary/20">
+                        <Truck className="w-5 h-5 text-primary shrink-0" />
+                        <span>{product.deliveryMethod || product.shippingDetails}</span>
+                      </div>
+                    )}
+                    
+                    {product.pickupPoints && product.pickupPoints.length > 0 && (
+                      <div className="mt-4">
+                        <p className="text-xs font-bold text-muted-foreground mb-3 uppercase tracking-wider flex items-center gap-1.5">
+                          <MapPin className="w-4 h-4" /> Puntos de retiro disponibles:
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {product.pickupPoints.map(point => (
+                            <span key={point} className="px-3 py-1.5 bg-background border-2 border-input text-xs font-bold rounded-lg shadow-sm hover:border-primary transition-colors cursor-default">
+                              {point}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
                 
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Envío</span>
-                  <span className="font-medium">Calculado al pagar</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Categoría</span>
-                  <span className="font-medium capitalize">{product.category.replace('_', ' ')}</span>
+                <div className="pt-4 border-t space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Categoría</span>
+                    <span className="font-medium capitalize">{product.category.replace('_', ' ')}</span>
+                  </div>
                 </div>
               </div>
             </div>

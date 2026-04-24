@@ -103,9 +103,31 @@ export function ProductForm({ initialData }: { initialData?: any }) {
         <textarea name="description" required rows={3} className="w-full rounded-md border border-input bg-background px-3 py-2" defaultValue={initialData?.description} />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-1">Detalles de Envío o Retiro</label>
-        <textarea name="shippingDetails" rows={2} placeholder="Ej: Retiro en tienda local disponible el mismo día. Envíos nacionales por pagar." className="w-full rounded-md border border-input bg-background px-3 py-2" defaultValue={initialData?.shippingDetails || ""} />
+      <div className="bg-secondary/10 p-4 md:p-5 rounded-xl border shadow-sm">
+        <h3 className="font-bold text-foreground mb-4 border-b pb-2">Detalles de Envío y Retiro</h3>
+        
+        <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold mb-1 text-muted-foreground uppercase tracking-wider">Método de Entrega</label>
+            <select name="deliveryMethod" className="w-full rounded-lg border-2 border-input bg-background px-3 py-2.5 font-medium focus:ring-primary focus:border-primary transition-all" defaultValue={initialData?.deliveryMethod || "Envíos a todo Chile y Retiro"}>
+              <option value="Envíos a todo Chile y Retiro">Envíos a todo Chile y Retiro</option>
+              <option value="Solo Envíos a todo Chile">Solo Envíos a todo Chile</option>
+              <option value="Solo Retiro">Solo Retiro</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wider">Puntos de Retiro Disponibles</label>
+            <div className="grid grid-cols-2 gap-3">
+              {["Linares", "Talca", "Longaví", "Yerbas Buenas"].map(point => (
+                <label key={point} className="flex items-center gap-3 bg-background p-3 rounded-lg border-2 border-input cursor-pointer hover:bg-secondary/20 transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                  <input type="checkbox" name="pickupPoints" value={point} defaultChecked={initialData?.pickupPoints?.includes(point)} className="w-4 h-4 rounded text-primary focus:ring-primary accent-primary" />
+                  <span className="text-sm font-medium">{point}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
       <div>

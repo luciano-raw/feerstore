@@ -21,59 +21,103 @@ export default async function AdminProductsPage() {
           <div className="lg:col-span-2">
             <h2 className="text-xl font-bold mb-4">Catálogo Actual ({products.length})</h2>
             <div className="bg-card border rounded-xl overflow-hidden shadow-sm">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-muted/50 border-b">
-                  <tr>
-                    <th className="px-4 py-3 font-medium">Miniatura</th>
-                    <th className="px-4 py-3 font-medium">Nombre</th>
-                    <th className="px-4 py-3 font-medium">Categoría</th>
-                    <th className="px-4 py-3 font-medium">Precio</th>
-                    <th className="px-4 py-3 font-medium">Stock</th>
-                    <th className="px-4 py-3 font-medium text-right">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {products.length === 0 ? (
+              {/* Desktop View */}
+              <div className="hidden md:block">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-muted/50 border-b">
                     <tr>
-                      <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
-                        No hay productos. Añade uno desde el botón de la izquierda.
-                      </td>
+                      <th className="px-4 py-3 font-medium">Miniatura</th>
+                      <th className="px-4 py-3 font-medium">Nombre</th>
+                      <th className="px-4 py-3 font-medium">Categoría</th>
+                      <th className="px-4 py-3 font-medium">Precio</th>
+                      <th className="px-4 py-3 font-medium">Stock</th>
+                      <th className="px-4 py-3 font-medium text-right">Acciones</th>
                     </tr>
-                  ) : null}
-                  {products.map((p) => (
-                    <tr key={p.id} className="hover:bg-muted/30 transition-colors">
-                      <td className="px-4 py-3">
-                        <div className="w-10 h-10 rounded-md overflow-hidden bg-secondary">
-                          <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 font-medium">{p.name}</td>
-                      <td className="px-4 py-3 capitalize">{p.category.replace('_', ' ')}</td>
-                      <td className="px-4 py-3">${p.price.toLocaleString("es-CL")}</td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${p.stock > 0 ? "bg-green-500/10 text-green-600" : "bg-destructive/10 text-destructive"}`}>
-                          {p.stock > 0 ? p.stock : "Agotado"}
+                  </thead>
+                  <tbody className="divide-y">
+                    {products.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
+                          No hay productos. Añade uno desde el botón de la izquierda.
+                        </td>
+                      </tr>
+                    ) : null}
+                    {products.map((p) => (
+                      <tr key={p.id} className="hover:bg-muted/30 transition-colors">
+                        <td className="px-4 py-3">
+                          <div className="w-20 h-20 rounded-md overflow-hidden bg-secondary">
+                            <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 font-medium">{p.name}</td>
+                        <td className="px-4 py-3 capitalize">{p.category.replace('_', ' ')}</td>
+                        <td className="px-4 py-3">${p.price.toLocaleString("es-CL")}</td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${p.stock > 0 ? "bg-green-500/10 text-green-600" : "bg-destructive/10 text-destructive"}`}>
+                            {p.stock > 0 ? p.stock : "Agotado"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex justify-end gap-2">
+                            <Link href={`/admin/products/${p.id}/edit`} className="p-2 text-foreground/70 hover:bg-secondary rounded-full transition-colors" title="Editar Producto">
+                              <Pencil className="w-4 h-4" />
+                            </Link>
+                            <form action={async () => {
+                              "use server"
+                              await deleteProduct(p.id)
+                            }}>
+                              <button className="p-2 text-destructive hover:bg-destructive/10 rounded-full transition-colors" title="Eliminar Producto">
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </form>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile View */}
+              <div className="md:hidden flex flex-col divide-y divide-border">
+                {products.length === 0 ? (
+                  <div className="px-4 py-8 text-center text-muted-foreground">
+                    No hay productos. Añade uno desde el botón superior.
+                  </div>
+                ) : null}
+                {products.map((p) => (
+                  <div key={p.id} className="p-4 flex gap-4 bg-card">
+                    <div className="w-20 h-20 rounded-md overflow-hidden bg-secondary shrink-0 border border-border">
+                      <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div>
+                        <h3 className="font-semibold text-sm line-clamp-2">{p.name}</h3>
+                        <p className="text-xs text-muted-foreground capitalize mt-1">{p.category.replace('_', ' ')}</p>
+                      </div>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="font-bold text-sm">${p.price.toLocaleString("es-CL")}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${p.stock > 0 ? "bg-green-500/10 text-green-600" : "bg-destructive/10 text-destructive"}`}>
+                          {p.stock > 0 ? `Stock: ${p.stock}` : "Agotado"}
                         </span>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <div className="flex justify-end gap-2">
-                          <Link href={`/admin/products/${p.id}/edit`} className="p-2 text-foreground/70 hover:bg-secondary rounded-full transition-colors" title="Editar Producto">
-                            <Pencil className="w-4 h-4" />
-                          </Link>
-                          <form action={async () => {
-                            "use server"
-                            await deleteProduct(p.id)
-                          }}>
-                            <button className="p-2 text-destructive hover:bg-destructive/10 rounded-full transition-colors" title="Eliminar Producto">
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </form>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2 justify-center border-l pl-3 ml-1">
+                      <Link href={`/admin/products/${p.id}/edit`} className="p-2 text-foreground/70 hover:bg-secondary rounded-full transition-colors" title="Editar Producto">
+                        <Pencil className="w-4 h-4" />
+                      </Link>
+                      <form action={async () => {
+                        "use server"
+                        await deleteProduct(p.id)
+                      }}>
+                        <button className="p-2 text-destructive hover:bg-destructive/10 rounded-full transition-colors" title="Eliminar Producto">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
