@@ -39,11 +39,18 @@ export function ProductCard({ product }: { product: ProductType }) {
         {product.images.map((image: string, index: number) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-500 bg-center bg-contain bg-no-repeat ${
+            className={`absolute inset-0 transition-opacity duration-500 ${
               index === (isHovered && product.images.length > 1 ? 1 : 0) ? "opacity-100" : "opacity-0"
             }`}
-            style={{ backgroundImage: `url(${image})` }}
-          />
+          >
+            <Image
+              src={image}
+              alt={`${product.name} - Imagen ${index + 1}`}
+              fill
+              className="object-contain"
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+            />
+          </div>
         ))}
         {isOutOfStock && (
           <div className="absolute top-2 left-2 md:top-3 md:left-3 z-10">

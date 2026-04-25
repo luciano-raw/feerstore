@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
 
 export function ProductGallery({ images }: { images: string[] }) {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -37,12 +38,20 @@ export function ProductGallery({ images }: { images: string[] }) {
             }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-center bg-contain bg-no-repeat transition-transform ease-out will-change-transform"
+            className="absolute inset-0 transition-transform ease-out will-change-transform"
             style={{ 
-              backgroundImage: `url(${safeImages[currentIndex]})`,
               transformOrigin: isZooming ? `${position.x}% ${position.y}%` : "center center"
             }}
-          />
+          >
+            <Image
+              src={safeImages[currentIndex]}
+              alt="Vista del producto"
+              fill
+              className="object-contain"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority
+            />
+          </motion.div>
         </AnimatePresence>
       </div>
 
@@ -57,9 +66,12 @@ export function ProductGallery({ images }: { images: string[] }) {
                 index === currentIndex ? "border-primary opacity-100" : "border-transparent opacity-60 hover:opacity-100"
               }`}
             >
-              <div
-                className="absolute inset-0 bg-center bg-contain bg-no-repeat"
-                style={{ backgroundImage: `url(${image})` }}
+              <Image
+                src={image}
+                alt={`Miniatura ${index + 1}`}
+                fill
+                className="object-cover"
+                sizes="96px"
               />
             </button>
           ))}

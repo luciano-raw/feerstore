@@ -86,6 +86,25 @@ export default async function ProductDetailPage({
                 </div>
               </div>
 
+              <div className="mb-6 flex items-center gap-2">
+                {product.stock > 0 ? (
+                  <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-bold border ${product.stock <= 3 ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20' : 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20'}`}>
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${product.stock <= 3 ? 'bg-amber-400' : 'bg-green-400'}`}></span>
+                      <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${product.stock <= 3 ? 'bg-amber-500' : 'bg-green-500'}`}></span>
+                    </span>
+                    {product.stock === 1 ? "¡Última unidad disponible!" : `Stock Disponible: ${product.stock} unidades`}
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 bg-destructive/10 text-destructive px-3 py-1.5 rounded-full text-sm font-bold border border-destructive/20">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-destructive"></span>
+                    </span>
+                    Agotado Temporalmente
+                  </div>
+                )}
+              </div>
+
               <AddToCartControls product={product} />
               
               <ShareProduct productName={product.name} productId={product.id} />
