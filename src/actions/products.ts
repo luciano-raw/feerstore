@@ -11,6 +11,8 @@ export async function createProduct(formData: FormData) {
   try {
     const name = formData.get("name") as string
     const price = parseFloat(formData.get("price") as string)
+    const discountPriceStr = formData.get("discountPrice") as string
+    const discountPrice = discountPriceStr && discountPriceStr.trim() !== "" ? parseFloat(discountPriceStr) : null
     const category = formData.get("category") as string
     const description = formData.get("description") as string
     const deliveryMethod = formData.get("deliveryMethod") as string
@@ -70,6 +72,7 @@ export async function createProduct(formData: FormData) {
       data: {
         name,
         price,
+        discountPrice,
         category,
         description,
         deliveryMethod,
@@ -92,6 +95,8 @@ export async function updateProduct(id: string, formData: FormData) {
   try {
     const name = formData.get("name") as string
     const price = parseFloat(formData.get("price") as string)
+    const discountPriceStr = formData.get("discountPrice") as string
+    const discountPrice = discountPriceStr && discountPriceStr.trim() !== "" ? parseFloat(discountPriceStr) : null
     const category = formData.get("category") as string
     const description = formData.get("description") as string
     const deliveryMethod = formData.get("deliveryMethod") as string
@@ -132,6 +137,7 @@ export async function updateProduct(id: string, formData: FormData) {
     const updateData: any = {
       name,
       price,
+      discountPrice,
       category,
       description,
       deliveryMethod,

@@ -79,10 +79,14 @@ export function ProductForm({ initialData }: { initialData?: any }) {
         <input name="name" required className="w-full rounded-md border border-input bg-background px-3 py-2" defaultValue={initialData?.name} />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Precio ($)</label>
+          <label className="block text-sm font-medium mb-1">Precio Normal ($)</label>
           <input name="price" type="number" required className="w-full rounded-md border border-input bg-background px-3 py-2" defaultValue={initialData?.price} />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1 text-primary">Valor Oferta ($)</label>
+          <input name="discountPrice" type="number" className="w-full rounded-md border border-primary/50 focus:border-primary bg-background px-3 py-2" placeholder="Opcional" defaultValue={initialData?.discountPrice} />
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Stock Disponible</label>

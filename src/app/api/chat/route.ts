@@ -12,12 +12,13 @@ export async function POST(req: Request) {
   try {
     // Fetch products for context
     const products = await prisma.product.findMany({
-      select: { name: true, price: true, description: true, category: true, id: true }
+      select: { name: true, price: true, discountPrice: true, description: true, category: true, id: true }
     })
 
-    const productContext = products.map(p => 
-      `- ${p.name}: $${p.price.toLocaleString('es-CL')}. URL: /product/${p.id}. Descripción: ${p.description.substring(0, 50)}...`
-    ).join("\n")
+    const productContext = products.map(p => {
+      const priceStr = p.discountPrice ? `$${p.discountPrice.toLocaleString('es-CL')} (Oferta, Normal: $${p.price.toLocaleString('es-CL')})` : `$${p.price.toLocaleString('es-CL')}`
+      return `- ${p.name}: ${priceStr}. URL: /product/${p.id}. Descripción: ${p.description.substring(0, 50)}...`
+    }).join("\n")
 
     const systemPrompt = `Eres "FerLu AI", asistente de FerLu Store Chile. 
     REGLAS:
@@ -25,6 +26,7 @@ export async function POST(req: Request) {
     2. NO listes todos los productos. Solo recomienda los 2 o 3 más relevantes.
     3. Para productos, usa formato Markdown con rutas internas: [Nombre del Producto](/product/ID).
     4. Envíos: Todo Chile. Presencial en Maule (Talca/Linares/Longaví).
+    5. CONTACTO: Si te preguntan por contacto o WhatsApp, entrega SOLO estos números oficiales: +56930531304 y +56932202607. No inventes otras URLs, emails o números.
 
     CONOCIMIENTO (PRODUCTOS):
     ${productContext}`

@@ -10,6 +10,7 @@ export type ProductType = {
   id: string
   name: string
   price: number
+  discountPrice?: number | null
   category: string
   images: string[]
   stock: number
@@ -25,12 +26,14 @@ export function ProductCard({ product }: { product: ProductType }) {
     setMounted(true)
   }, [])
 
-  const hasDiscount = mounted && vipDiscount > 0
-  const finalPrice = hasDiscount ? product.price * (1 - vipDiscount / 100) : product.price
+  const basePrice = product.discountPrice ?? product.price
+  const hasVipDiscount = mounted && vipDiscount > 0
+  const finalPrice = hasVipDiscount ? basePrice * (1 - vipDiscount / 100) : basePrice
+  const hasOffer = product.discountPrice != null
 
   return (
     <div 
-      className="group relative overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md"
+      className={`group relative overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md ${hasOffer ? 'border-green-500/50 shadow-[0_0_15px_rgba(34,197,94,0.2)] ring-1 ring-green-500/30 hover:shadow-[0_0_20px_rgba(34,197,94,0.3)]' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -70,12 +73,12 @@ export function ProductCard({ product }: { product: ProductType }) {
         </Link>
         <div className="flex items-center justify-between mt-1 md:mt-2">
           <div className="flex flex-col">
-            <span className="font-bold text-primary text-base md:text-lg">
+            <span className={`font-bold text-base md:text-lg ${hasOffer ? 'text-green-500 dark:text-green-400' : 'text-primary'}`}>
               ${finalPrice.toLocaleString("es-CL")}
             </span>
-            {hasDiscount && (
-              <span className="text-[10px] md:text-xs text-muted-foreground line-through">
-                ${product.price.toLocaleString("es-CL")} (-{vipDiscount}%)
+            {(hasVipDiscount || hasOffer) && (
+              <span className="text-xs md:text-sm text-muted-foreground font-medium line-through mt-0.5 decoration-destructive/50 decoration-2">
+                ${product.price.toLocaleString("es-CL")} {hasVipDiscount ? `(-${vipDiscount}%)` : ""}
               </span>
             )}
           </div>

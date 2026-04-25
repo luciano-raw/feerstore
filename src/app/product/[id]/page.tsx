@@ -5,7 +5,8 @@ import { ProductSchema } from "@/components/json-ld"
 import { PrismaClient } from "@prisma/client"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { Truck, MapPin } from "lucide-react"
+import Link from "next/link"
+import { Truck, MapPin, ArrowLeft } from "lucide-react"
 
 const prisma = new PrismaClient()
 
@@ -58,8 +59,14 @@ export default async function ProductDetailPage({
 
   return (
     <div className="flex flex-col min-h-screen">
-      <main className="flex-1 py-12">
+      <main className="flex-1 py-8 md:py-12">
         <div className="container mx-auto px-4 md:px-6">
+          <div className="mb-6">
+            <Link href="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors bg-secondary/20 hover:bg-secondary/40 px-3 py-1.5 rounded-full">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Volver al Catálogo
+            </Link>
+          </div>
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16">
             
             {/* Gallery Intersect */}
@@ -72,9 +79,16 @@ export default async function ProductDetailPage({
               <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">
                 {product.name}
               </h1>
-              <p className="text-2xl font-semibold mb-6">
-                ${product.price.toLocaleString("es-CL")}
-              </p>
+              <div className="flex items-end gap-3 mb-6">
+                <p className={`text-2xl md:text-3xl font-semibold ${product.discountPrice != null ? 'text-green-500 dark:text-green-400' : 'text-primary'}`}>
+                  ${(product.discountPrice ?? product.price).toLocaleString("es-CL")}
+                </p>
+                {product.discountPrice != null && (
+                  <p className="text-lg md:text-xl text-muted-foreground font-medium line-through pb-0.5 decoration-destructive/50 decoration-2">
+                    ${product.price.toLocaleString("es-CL")}
+                  </p>
+                )}
+              </div>
               
               <div className="mb-8">
                 <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-3">
