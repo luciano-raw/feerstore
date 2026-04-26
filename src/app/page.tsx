@@ -1,10 +1,8 @@
 import Link from "next/link"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
 import { ProductCard } from "@/components/product-card"
 import { SearchBar } from "@/components/search-bar"
-import { getStoreSettings } from "@/actions/settings"
-
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma"
 
 export default async function Home() {
   const recentProducts = await prisma.product.findMany({

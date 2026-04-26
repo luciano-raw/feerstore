@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
 import { updateProductStock } from "@/actions/products"
 import { Package, AlertTriangle, XCircle, CheckCircle2, Save, ArrowLeft } from "lucide-react"
 import Link from "next/link"
-
-const prisma = new PrismaClient()
 
 export default async function AdminInventoryPage() {
   const products = await prisma.product.findMany({

@@ -2,14 +2,12 @@ import { AddToCartControls } from "@/components/add-to-cart-button"
 import { ProductGallery } from "@/components/product-gallery"
 import { ShareProduct } from "@/components/share-product"
 import { ProductSchema } from "@/components/json-ld"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Truck, MapPin, ArrowLeft } from "lucide-react"
 import { trackProductClick } from "@/actions/analytics"
-
-const prisma = new PrismaClient()
 
 export async function generateMetadata({
   params,

@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
 
 export const alt = "FerLu Store | Producto"
 export const size = {
@@ -7,8 +7,6 @@ export const size = {
   height: 630,
 }
 export const contentType = "image/png"
-
-const prisma = new PrismaClient()
 
 export default async function Image({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

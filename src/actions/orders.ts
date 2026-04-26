@@ -1,9 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma"
 
 export async function createOrder(data: { customerName: string; customerPhone?: string; total: number; items: { productId: string; quantity: number; price: number }[] }) {
   try {

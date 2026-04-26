@@ -2,10 +2,8 @@
 
 import { revalidatePath } from "next/cache"
 import { createClient } from "@supabase/supabase-js"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
 import { v4 as uuidv4 } from "uuid"
-
-const prisma = new PrismaClient()
 
 export async function createProduct(formData: FormData) {
   try {

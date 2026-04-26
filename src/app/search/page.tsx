@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
 import { ProductCard } from "@/components/product-card"
 import { Search } from "lucide-react"
-
-const prisma = new PrismaClient()
 
 export default async function SearchPage({
   searchParams,

@@ -1,10 +1,8 @@
 import { ProductForm } from "@/components/admin/product-form"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
-
-const prisma = new PrismaClient()
 
 export default async function EditProductPage({
   params,
