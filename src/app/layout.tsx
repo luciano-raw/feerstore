@@ -7,6 +7,7 @@ import { Header } from "@/components/header";
 import { ChatWidget } from "@/components/chat-widget";
 import { DiscountProvider } from "@/components/discount-provider";
 import { OrganizationSchema } from "@/components/json-ld";
+import { AnalyticsTracker } from "@/components/analytics-tracker";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -94,6 +95,7 @@ export default async function RootLayout({
         </head>
         <body className="min-h-screen flex flex-col antialiased" suppressHydrationWarning>
           <ThemeProvider>
+            <AnalyticsTracker />
             <DiscountProvider discount={discount} />
             <Header />
             {children}

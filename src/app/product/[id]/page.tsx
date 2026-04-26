@@ -7,6 +7,7 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Truck, MapPin, ArrowLeft } from "lucide-react"
+import { trackProductClick } from "@/actions/analytics"
 
 const prisma = new PrismaClient()
 
@@ -56,6 +57,9 @@ export default async function ProductDetailPage({
   if (!product) {
     notFound()
   }
+
+  // Fire tracking asynchronously so we don't block the render
+  trackProductClick(product.id).catch(console.error)
 
   return (
     <div className="flex flex-col min-h-screen">

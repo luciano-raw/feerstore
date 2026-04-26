@@ -33,6 +33,8 @@ model Product {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   orderItems       OrderItem[]
+  clicks           ProductClick[]
+  inventoryChanges InventoryChange[]
 }
 
 model Order {
@@ -65,4 +67,28 @@ model StoreSettings {
   storeNotice        String?  
   whatsappNumber     String   @default("56930531304")
   updatedAt          DateTime @updatedAt
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String?
+  createdAt DateTime @default(now())
+}
+
+model ProductClick {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model InventoryChange {
+  id            String   @id @default(cuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  previousStock Int
+  newStock      Int
+  change        Int
+  reason        String   // "MANUAL_UPDATE", "SALE", "RESTOCK"
+  createdAt     DateTime @default(now())
 }

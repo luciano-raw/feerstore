@@ -27,9 +27,19 @@ export default function CartPage() {
     
     setIsProcessing(true)
     try {
+      // Create order in DB first
+      const { createOrder } = await import("@/actions/orders")
+      await createOrder({
+        customerName: name,
+        total: total,
+        items: items.map(i => ({
+          productId: i.id,
+          quantity: i.quantity,
+          price: i.price
+        }))
+      })
+
       // Dynamic fetch of store settings
-      const req = await fetch('/api/settings') // We need an API route, wait. No, cart is client side!
-      // Actually we have a Server Action getStoreSettings! Yes!
       const { getStoreSettings } = await import("@/actions/settings")
       const settings = await getStoreSettings()
       
@@ -37,6 +47,7 @@ export default function CartPage() {
       window.open(whatsappUrl, "_blank")
       clearCart()
     } catch (e) {
+      console.error(e)
       alert("Error al procesar el enlace. Intenta nuevamente.")
     } finally {
       setIsProcessing(false)

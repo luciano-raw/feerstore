@@ -1,5 +1,6 @@
 import { getUsers, updateUserRole, updateUserDiscount } from "@/actions/users"
-import { Shield, ShieldAlert, Save } from "lucide-react"
+import { Shield, ShieldAlert, Save, ArrowLeft } from "lucide-react"
+import Link from "next/link"
 
 export default async function AdminUsersPage() {
   const users = await getUsers()
@@ -7,6 +8,12 @@ export default async function AdminUsersPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+        <div className="mb-6">
+          <Link href="/admin" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors bg-secondary/20 hover:bg-secondary/40 px-3 py-1.5 rounded-full">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Volver al Panel
+          </Link>
+        </div>
         <h1 className="text-3xl font-bold mb-2 text-primary">Gestión de Usuarios</h1>
         <p className="text-muted-foreground mb-8">Otorga poderes de administración o Descuentos VIP a tus clientes.</p>
         

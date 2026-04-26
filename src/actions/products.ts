@@ -187,11 +187,28 @@ export async function deleteProduct(id: string) {
 
 export async function updateProductStock(id: string, stock: number) {
   try {
+    const product = await prisma.product.findUnique({ where: { id } })
+    if (!product) throw new Error("Product not found")
+
     await prisma.product.update({
       where: { id },
       data: { stock }
     })
+
+    if (product.stock !== stock) {
+      await prisma.inventoryChange.create({
+        data: {
+          productId: id,
+          previousStock: product.stock,
+          newStock: stock,
+          change: stock - product.stock,
+          reason: "MANUAL_UPDATE"
+        }
+      })
+    }
+
     revalidatePath("/admin/inventory")
+    revalidatePath("/admin/stats")
     revalidatePath("/") // To update main store availability if needed
     revalidatePath(`/product/${id}`)
   } catch (error) {
