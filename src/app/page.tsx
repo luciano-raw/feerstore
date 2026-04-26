@@ -2,7 +2,7 @@ import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 import { ProductCard } from "@/components/product-card"
 import { SearchBar } from "@/components/search-bar"
-import { prisma } from "@/lib/prisma"
+import { getStoreSettings } from "@/actions/settings"
 
 export default async function Home() {
   const recentProducts = await prisma.product.findMany({
@@ -10,11 +10,29 @@ export default async function Home() {
       category: { not: 'joyas' }
     },
     orderBy: { createdAt: 'desc' },
-    take: 24
+    take: 50 // Tomar una muestra más grande para barajar
   })
   
-  // Shuffle array para mostrar productos destacados aleatorios
-  const latestProducts = [...recentProducts].sort(() => Math.random() - 0.5).slice(0, 8)
+  // Separar productos en oferta y normales
+  const saleProducts = recentProducts.filter(p => p.discountPrice !== null)
+  const normalProducts = recentProducts.filter(p => p.discountPrice === null)
+
+  // Barajar ambas listas aleatoriamente
+  const shuffledSaleProducts = [...saleProducts].sort(() => Math.random() - 0.5)
+  const shuffledNormalProducts = [...normalProducts].sort(() => Math.random() - 0.5)
+
+  // Priorizar los que están en oferta, y rellenar con normales hasta llegar a 8
+  let latestProducts = [...shuffledSaleProducts]
+  
+  if (latestProducts.length < 8) {
+    const remainingSlots = 8 - latestProducts.length
+    latestProducts = [...latestProducts, ...shuffledNormalProducts.slice(0, remainingSlots)]
+  } else {
+    latestProducts = latestProducts.slice(0, 8)
+  }
+
+  // Barajar el resultado final para que las ofertas se mezclen visualmente con los normales
+  latestProducts.sort(() => Math.random() - 0.5)
   
   const settings = await getStoreSettings()
 

@@ -23,7 +23,7 @@ export async function trackProductClick(productId: string) {
 }
 
 export async function getDashboardStats() {
-  const [totalViews, topProducts, inventoryTotal, recentViews] = await Promise.all([
+  const [totalViews, topProducts, inventoryTotal, recentViews, auditLogs] = await Promise.all([
     prisma.pageView.count(),
     prisma.product.findMany({
       take: 5,
@@ -44,6 +44,10 @@ export async function getDashboardStats() {
       select: {
         createdAt: true
       }
+    }),
+    prisma.auditLog.findMany({
+      take: 50,
+      orderBy: { createdAt: 'desc' }
     })
   ])
 
@@ -93,6 +97,7 @@ export async function getDashboardStats() {
     totalItemsInStock: inventoryTotal._sum.stock || 0,
     topProducts: topProducts.map(p => ({ name: p.name, clicks: p._count.clicks })),
     viewsChartData: chartData,
-    inventoryChartData
+    inventoryChartData,
+    auditLogs
   }
 }

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 import { createClient } from "@supabase/supabase-js"
 import { prisma } from "@/lib/prisma"
 import { v4 as uuidv4 } from "uuid"
+import { logAdminAction } from "@/actions/audit"
 
 export async function createProduct(formData: FormData) {
   try {
@@ -78,6 +79,13 @@ export async function createProduct(formData: FormData) {
         stock,
         images: imageUrls
       }
+    })
+
+    await logAdminAction({
+      action: "CREATE_PRODUCT",
+      entityType: "PRODUCT",
+      entityName: product.name,
+      details: `Precio: $${product.price}, Stock: ${product.stock}`
     })
 
     revalidatePath("/admin/products")
@@ -157,10 +165,28 @@ export async function updateProduct(id: string, formData: FormData) {
       } catch (e) {}
     }
 
+    const oldProduct = await prisma.product.findUnique({ where: { id } })
+
     const product = await prisma.product.update({
       where: { id },
       data: updateData
     })
+
+    let detailsStr = ""
+    if (oldProduct?.price !== price) detailsStr += `Precio de $${oldProduct?.price} a $${price}. `
+    if (oldProduct?.discountPrice !== discountPrice) detailsStr += `Oferta cambió. `
+    if (imageUrls.length > 0) detailsStr += `Fotos actualizadas. `
+    if (oldProduct?.description !== description) detailsStr += `Descripción modificada. `
+    if (oldProduct?.stock !== stock) detailsStr += `Stock de ${oldProduct?.stock} a ${stock}. `
+
+    if (detailsStr) {
+      await logAdminAction({
+        action: "UPDATE_PRODUCT",
+        entityType: "PRODUCT",
+        entityName: product.name,
+        details: detailsStr.trim()
+      })
+    }
 
     revalidatePath("/admin/products")
     revalidatePath("/")
@@ -179,7 +205,15 @@ export async function getProducts() {
 }
 
 export async function deleteProduct(id: string) {
+  const product = await prisma.product.findUnique({ where: { id } })
   await prisma.product.delete({ where: { id } })
+  if (product) {
+    await logAdminAction({
+      action: "DELETE_PRODUCT",
+      entityType: "PRODUCT",
+      entityName: product.name
+    })
+  }
   revalidatePath("/admin/products")
 }
 
@@ -202,6 +236,13 @@ export async function updateProductStock(id: string, stock: number) {
           change: stock - product.stock,
           reason: "MANUAL_UPDATE"
         }
+      })
+
+      await logAdminAction({
+        action: "UPDATE_STOCK",
+        entityType: "PRODUCT",
+        entityName: product.name,
+        details: `Stock modificado de ${product.stock} a ${stock}`
       })
     }
 

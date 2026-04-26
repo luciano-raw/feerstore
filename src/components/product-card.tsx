@@ -33,7 +33,7 @@ export function ProductCard({ product }: { product: ProductType }) {
 
   return (
     <div 
-      className={`group relative overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md ${hasOffer ? 'border-green-500/50 shadow-[0_0_15px_rgba(34,197,94,0.2)] ring-1 ring-green-500/30 hover:shadow-[0_0_20px_rgba(34,197,94,0.3)]' : ''}`}
+      className={`group relative overflow-hidden rounded-lg bg-card text-card-foreground shadow-sm transition-all hover:shadow-md ${hasOffer ? 'border-2 border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)] hover:shadow-[0_0_25px_rgba(34,197,94,0.4)] hover:-translate-y-1' : 'border'}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -63,6 +63,13 @@ export function ProductCard({ product }: { product: ProductType }) {
             </span>
           </div>
         )}
+        {hasOffer && !isOutOfStock && (
+          <div className="absolute top-2 right-2 md:top-3 md:right-3 z-10">
+            <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-[10px] md:text-xs font-black px-3 py-1.5 rounded-full shadow-lg uppercase tracking-wider animate-pulse border border-white/20">
+              ¡Oferta!
+            </span>
+          </div>
+        )}
       </Link>
       
       <div className="p-3 md:p-4 flex flex-col gap-1.5 md:gap-2">
@@ -73,7 +80,7 @@ export function ProductCard({ product }: { product: ProductType }) {
         </Link>
         <div className="flex items-center justify-between mt-1 md:mt-2">
           <div className="flex flex-col">
-            <span className={`font-bold text-base md:text-lg ${hasOffer ? 'text-green-500 dark:text-green-400' : 'text-primary'}`}>
+            <span className={`font-bold text-base md:text-lg ${hasOffer ? 'text-green-500 dark:text-green-400 drop-shadow-sm' : 'text-primary'}`}>
               ${finalPrice.toLocaleString("es-CL")}
             </span>
             {(hasVipDiscount || hasOffer) && (

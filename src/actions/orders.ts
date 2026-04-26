@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
+import { logAdminAction } from "@/actions/audit"
 
 export async function createOrder(data: { customerName: string; customerPhone?: string; total: number; items: { productId: string; quantity: number; price: number }[] }) {
   try {
@@ -78,6 +79,13 @@ export async function updateOrderStatus(id: string, status: string) {
     const updatedOrder = await prisma.order.update({
       where: { id },
       data: { status }
+    })
+    
+    await logAdminAction({
+      action: status === "completed" ? "CONFIRM_ORDER" : "CANCEL_ORDER",
+      entityType: "ORDER",
+      entityName: `Pedido #${id.slice(-6).toUpperCase()}`,
+      details: status === "completed" ? "Pedido confirmado y stock descontado" : "Pedido cancelado"
     })
     
     revalidatePath("/admin/orders")

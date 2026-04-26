@@ -5,6 +5,8 @@ import { getDashboardStats } from "@/actions/analytics"
 import { BarChart3, TrendingUp, DollarSign, PackageOpen, MousePointerClick, ArrowLeft } from "lucide-react"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar, Legend } from "recharts"
 import Link from "next/link"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
 
 export default function AdminStatsPage() {
   const [stats, setStats] = useState<any>(null)
@@ -159,6 +161,55 @@ export default function AdminStatsPage() {
               </ResponsiveContainer>
             </div>
           </div>
+          {/* Audit Logs Table */}
+          <div className="p-6 border rounded-xl bg-card shadow-sm lg:col-span-2">
+            <h2 className="text-xl font-bold mb-6">Historial de Actividad Reciente</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs uppercase bg-secondary/30 text-muted-foreground border-b">
+                  <tr>
+                    <th className="px-4 py-3">Fecha</th>
+                    <th className="px-4 py-3">Usuario</th>
+                    <th className="px-4 py-3">Acción</th>
+                    <th className="px-4 py-3">Entidad</th>
+                    <th className="px-4 py-3">Detalles</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.auditLogs?.length > 0 ? (
+                    stats.auditLogs.map((log: any) => (
+                      <tr key={log.id} className="border-b hover:bg-secondary/10 transition-colors">
+                        <td className="px-4 py-3 whitespace-nowrap text-muted-foreground">
+                          {format(new Date(log.createdAt), "dd MMM, HH:mm", { locale: es })}
+                        </td>
+                        <td className="px-4 py-3 font-medium text-foreground">
+                          {log.userEmail || "Sistema"}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="bg-primary/10 text-primary px-2 py-1 rounded-md text-xs font-bold">
+                            {log.action}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 font-medium">
+                          {log.entityName || "-"}
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground">
+                          {log.details || "-"}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                        No hay actividad reciente registrada.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
       </main>
     </div>

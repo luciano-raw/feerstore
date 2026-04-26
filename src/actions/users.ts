@@ -2,6 +2,7 @@
 
 import { clerkClient } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
+import { logAdminAction } from "@/actions/audit"
 
 export async function updateUserRole(userId: string, role: string | null) {
   const client = await clerkClient()
@@ -9,6 +10,16 @@ export async function updateUserRole(userId: string, role: string | null) {
   // clerk merges properties in publicMetadata. So to remove a role we pass null or empty
   await client.users.updateUserMetadata(userId, {
     publicMetadata: { role }
+  })
+  
+  const user = await client.users.getUser(userId)
+  const email = user.emailAddresses[0]?.emailAddress || userId
+  
+  await logAdminAction({
+    action: "UPDATE_ROLE",
+    entityType: "USER",
+    entityName: email,
+    details: role === "admin" ? "Se otorgó rol de Administrador" : "Se retiró rol de Administrador"
   })
   
   revalidatePath("/admin/users")
@@ -19,6 +30,16 @@ export async function updateUserDiscount(userId: string, discount: number) {
   
   await client.users.updateUserMetadata(userId, {
     publicMetadata: { discount }
+  })
+  
+  const user = await client.users.getUser(userId)
+  const email = user.emailAddresses[0]?.emailAddress || userId
+  
+  await logAdminAction({
+    action: "UPDATE_DISCOUNT",
+    entityType: "USER",
+    entityName: email,
+    details: `Descuento actualizado a ${discount}%`
   })
   
   revalidatePath("/admin/users")

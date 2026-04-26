@@ -92,3 +92,14 @@ model InventoryChange {
   reason        String   // "MANUAL_UPDATE", "SALE", "RESTOCK"
   createdAt     DateTime @default(now())
 }
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?  
+  userEmail   String?  
+  action      String   // "CREATE_PRODUCT", "UPDATE_PRICE", "UPDATE_STOCK", "DELETE_PRODUCT", "UPDATE_SETTINGS", "UPDATE_ROLE", "UPDATE_DISCOUNT", "CONFIRM_ORDER", "CANCEL_ORDER"
+  entityType  String   // "PRODUCT", "ORDER", "USER", "SETTINGS"
+  entityName  String?  // Ej. "Crema facial" o "luciano@gmail.com"
+  details     String?  // Detalles descriptivos, ej. "De $1000 a $2000"
+  createdAt   DateTime @default(now())
+}
