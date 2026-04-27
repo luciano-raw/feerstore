@@ -22,7 +22,15 @@ export async function trackProductClick(productId: string) {
   }
 }
 
-export async function getDashboardStats() {
+export async function getDashboardStats(timeframe: '7d' | '30d' | '12m' = '30d') {
+  let dateGte = new Date()
+  if (timeframe === '7d') {
+    dateGte.setDate(dateGte.getDate() - 7)
+  } else if (timeframe === '30d') {
+    dateGte.setDate(dateGte.getDate() - 30)
+  } else if (timeframe === '12m') {
+    dateGte.setMonth(dateGte.getMonth() - 12)
+  }
   const [totalViews, topProducts, inventoryTotal, recentViews, auditLogs] = await Promise.all([
     prisma.pageView.count(),
     prisma.product.findMany({
@@ -38,7 +46,7 @@ export async function getDashboardStats() {
     prisma.pageView.findMany({
       where: {
         createdAt: {
-          gte: new Date(new Date().setDate(new Date().getDate() - 30))
+          gte: dateGte
         }
       },
       select: {
@@ -55,10 +63,12 @@ export async function getDashboardStats() {
   const allProducts = await prisma.product.findMany({ select: { stock: true, price: true } })
   const totalMoneyInStock = allProducts.reduce((sum, p) => sum + (p.stock * p.price), 0)
 
-  // Group page views by day for the chart
+  // Group page views by period for the chart
   const viewsByDay = recentViews.reduce((acc: any, view) => {
-    const date = view.createdAt.toISOString().split('T')[0]
-    acc[date] = (acc[date] || 0) + 1
+    const key = timeframe === '12m' 
+      ? view.createdAt.toISOString().slice(0, 7) // YYYY-MM
+      : view.createdAt.toISOString().split('T')[0] // YYYY-MM-DD
+    acc[key] = (acc[key] || 0) + 1
     return acc
   }, {})
 
@@ -71,20 +81,23 @@ export async function getDashboardStats() {
   const inventoryChanges = await prisma.inventoryChange.findMany({
     where: {
       createdAt: {
-        gte: new Date(new Date().setDate(new Date().getDate() - 30))
+        gte: dateGte
       }
     },
     select: { createdAt: true, change: true }
   })
 
   const changesByDay = inventoryChanges.reduce((acc: any, changeRecord) => {
-    const date = changeRecord.createdAt.toISOString().split('T')[0]
-    if (!acc[date]) acc[date] = { date, ventas: 0, ajustes: 0 }
+    const key = timeframe === '12m' 
+      ? changeRecord.createdAt.toISOString().slice(0, 7)
+      : changeRecord.createdAt.toISOString().split('T')[0]
+    
+    if (!acc[key]) acc[key] = { date: key, ventas: 0, ajustes: 0 }
     
     if (changeRecord.change < 0) {
-      acc[date].ventas += Math.abs(changeRecord.change) // Represent as positive for the chart
+      acc[key].ventas += Math.abs(changeRecord.change) // Represent as positive for the chart
     } else {
-      acc[date].ajustes += changeRecord.change
+      acc[key].ajustes += changeRecord.change
     }
     return acc
   }, {})

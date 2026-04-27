@@ -11,11 +11,13 @@ import { es } from "date-fns/locale"
 export default function AdminStatsPage() {
   const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [timeframe, setTimeframe] = useState<'7d' | '30d' | '12m'>('30d')
 
   useEffect(() => {
     async function load() {
+      setLoading(true)
       try {
-        const data = await getDashboardStats()
+        const data = await getDashboardStats(timeframe)
         setStats(data)
       } catch (e) {
         console.error(e)
@@ -24,7 +26,7 @@ export default function AdminStatsPage() {
       }
     }
     load()
-  }, [])
+  }, [timeframe])
 
   if (loading) {
     return (
@@ -46,14 +48,26 @@ export default function AdminStatsPage() {
             Volver al Panel
           </Link>
         </div>
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-            <BarChart3 className="w-6 h-6" />
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+              <BarChart3 className="w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-primary">Rendimiento del Negocio</h1>
+              <p className="text-muted-foreground">Analiza tus visitas, clics y el valor de tu inventario.</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-primary">Rendimiento del Negocio</h1>
-            <p className="text-muted-foreground">Analiza tus visitas, clics y el valor de tu inventario en tiempo real.</p>
-          </div>
+          
+          <select 
+            value={timeframe}
+            onChange={(e) => setTimeframe(e.target.value as any)}
+            className="bg-secondary/30 border border-secondary text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary font-medium cursor-pointer hover:bg-secondary/50 transition-colors"
+          >
+            <option value="7d">Últimos 7 días</option>
+            <option value="30d">Últimos 30 días</option>
+            <option value="12m">Últimos 12 meses</option>
+          </select>
         </div>
 
         {/* KPI Cards */}
@@ -99,7 +113,7 @@ export default function AdminStatsPage() {
         <div className="grid lg:grid-cols-2 gap-8 mb-8">
           {/* Vistas Web Chart */}
           <div className="p-6 border rounded-xl bg-card shadow-sm">
-            <h2 className="text-xl font-bold mb-6">Visitas a la Web (Últimos 30 días)</h2>
+            <h2 className="text-xl font-bold mb-6">Visitas a la Web {timeframe === '7d' ? '(Últimos 7 días)' : timeframe === '30d' ? '(Últimos 30 días)' : '(Últimos 12 meses)'}</h2>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={stats.viewsChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -142,7 +156,7 @@ export default function AdminStatsPage() {
 
           {/* Inventory Changes Chart */}
           <div className="p-6 border rounded-xl bg-card shadow-sm lg:col-span-2">
-            <h2 className="text-xl font-bold mb-6">Movimientos de Inventario (Últimos 30 días)</h2>
+            <h2 className="text-xl font-bold mb-6">Movimientos de Inventario {timeframe === '7d' ? '(Últimos 7 días)' : timeframe === '30d' ? '(Últimos 30 días)' : '(Últimos 12 meses)'}</h2>
             <p className="text-sm text-muted-foreground mb-4">Muestra los productos deducidos por ventas y los productos añadidos por ajustes manuales.</p>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
